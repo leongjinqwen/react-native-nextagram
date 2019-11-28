@@ -1,8 +1,8 @@
 import React from 'react';
-import AppNavigator from './AppNavigator';
+import SwitchNav from './AppNavigator';
 import {createAppContainer} from 'react-navigation';
 
-const AppContainer = createAppContainer(AppNavigator);
+const AppContainer = createAppContainer(SwitchNav);
 
 export default class App extends React.Component {
 

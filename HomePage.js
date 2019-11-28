@@ -1,11 +1,23 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Text,Image, View } from 'react-native';
-import { Card, ListItem, Button, Icon } from 'react-native-elements'
+import { StyleSheet, ScrollView, Text,Image, View,Button,AsyncStorage } from 'react-native';
+import { Card, ListItem } from 'react-native-elements'
 
 // only one export default in one js file
 export default class HomePage extends React.Component {
-  static navigationOptions = {
-    title: 'Home',
+  static navigationOptions = ({ navigation }) =>{
+    return {
+      title: 'Home',
+      headerRight:() => (
+        <Button
+          onPress={async () => {
+            await AsyncStorage.clear();
+            navigation.navigate('Login')
+          }}
+          title="Sign Out"
+          color="red"
+        />
+        )
+    }
   }
   state = {
     users:[],

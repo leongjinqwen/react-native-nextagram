@@ -3,35 +3,17 @@ import HomePage from './HomePage';
 import ProfilePage from './ProfilePage';
 import LoginPage from './LoginPage';
 import SignUp from './SignUp';
+import AuthLoadingScreen from './Auth';
+import { createSwitchNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 
-const AppNavigator = createStackNavigator({
-        Home: {
-          screen: HomePage,
-          navigationOptions: {
-            title: "Home Page"
-          }
-        },
-        Profile: {
-          screen: ProfilePage,
-          navigationOptions: {
-            title: "Profile Page"
-          }
-        },
-        Login: {
-          screen: LoginPage,
-          navigationOptions: {
-            title: "Sign In"
-          }
-        },
-        SignUp: {
-          screen: SignUp,
-          navigationOptions: {
-            title: "Sign Up"
-          }
-        },
-    },
+const AppStack = createStackNavigator(
+  {
+      Home:  HomePage,
+      Profile: ProfilePage,
+  },
     {
-        initialRouteName: 'Login',
+        initialRouteName: 'Home',
         /* The header config from HomeScreen is now here */
         defaultNavigationOptions: {
           headerStyle: {
@@ -44,5 +26,37 @@ const AppNavigator = createStackNavigator({
         },
     }
 );
-
-export default AppNavigator;
+const AuthStack = createBottomTabNavigator(
+  {
+    Login: {
+      screen: LoginPage,
+      navigationOptions: {
+        tabBarLabel: "Login",
+      },
+    },
+    SignUp: {
+      screen: SignUp,
+      navigationOptions: {
+        tabBarLabel: "Sign Up",
+      },
+    },
+  },
+  {
+    defaultNavigationOptions: {
+      tabBarOptions: {
+        activeTintColor: 'tomato',
+        inactiveTintColor: 'gray',
+      },
+    },
+  }
+)
+export default SwitchNav = createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    App: AppStack,
+    Auth: AuthStack,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+)

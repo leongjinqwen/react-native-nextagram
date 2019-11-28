@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Text,Image,View } from 'react-native';
+import { StyleSheet, ScrollView, Text,Image,View,Button,AsyncStorage } from 'react-native';
 import { Avatar } from 'react-native-elements'
 
 export default class ProfilePage extends React.Component {

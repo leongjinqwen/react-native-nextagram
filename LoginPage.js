@@ -1,15 +1,20 @@
 import React from 'react';
-import { StyleSheet,TextInput,View,Text,TouchableHighlight } from 'react-native';
+import { StyleSheet,TextInput,View,Text,TouchableHighlight,KeyboardAvoidingView,AsyncStorage,ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {Header} from 'react-navigation-stack'
 
 export default class LoginPage extends React.Component {
-    static navigationOptions = {
-      title: 'Sign In',
-    };
+    // static navigationOptions = {
+    //   title: 'Sign In',
+    // };
     state = {
         username:'',
         password:''
     }
+    _signInAsync = async (token) => {
+        await AsyncStorage.setItem('userToken', token );
+        // await AsyncStorage.setItem('user', user );
+      };
 
     handleSubmit=()=> {
         fetch('https://insta.nextacademy.com/api/v1/login', {
@@ -26,7 +31,9 @@ export default class LoginPage extends React.Component {
         .then((response) => response.json())
         .then((responseJson) => {
             console.log('response object:',responseJson)
-
+            console.log('response user:',responseJson.user)
+            this._signInAsync(responseJson.auth_token,)
+            this.props.navigation.navigate('Profile',{user:responseJson.user});
         })
         .catch((error) => {
             console.log('error:',error);
@@ -34,37 +41,39 @@ export default class LoginPage extends React.Component {
     }
     render(){
         return(
-            <View containerStyle={styles.card}>
-                <View style={styles.inputSection}>
-                    <TextInput
-                        ref="username"
-                        style={styles.input}
-                        placeholder="Username"
-                        onChangeText={username => this.setState({username})}
-                        value={this.state.username}
-                    />
-                    <Icon style={{marginHorizontal:10,marginBottom:0}} name="user" size={20} color="black"/>
-                </View>
-                <View style={styles.inputSection}>
-                    <TextInput
-                        ref="password"
-                        style={styles.input}
-                        placeholder="Password"
-                        secureTextEntry
-                        onChangeText={password => this.setState({password})}
-                        value={this.state.password}
-                    />
-                    <Icon style={{marginHorizontal:10,marginBottom:0}} name="lock" size={20} color="black"/>
-                </View>
-                <View style={{flex:1,flexDirection:"row",justifyContent:'center',padding:10}}>
-                    <TouchableHighlight style={styles.touchableLogin} onPress={this.handleSubmit}>
-                        <Text style={styles.button}>Login</Text>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={styles.touchableSignUp} onPress={() => this.props.navigation.navigate('SignUp')}>
-                        <Text style={styles.button}>Sign Up</Text>
-                    </TouchableHighlight>
-                </View>
-            </View>
+            <ScrollView style={{paddingTop:150,paddingHorizontal:20}}>
+                <KeyboardAvoidingView containerStyle={styles.card} keyboardVerticalOffset = {Header.HEIGHT +60} behavior="padding">
+                    <View style={styles.inputSection}>
+                        <TextInput
+                            ref="username"
+                            style={styles.input}
+                            placeholder="Username"
+                            onChangeText={username => this.setState({username})}
+                            value={this.state.username}
+                        />
+                        <Icon style={{marginHorizontal:10,marginBottom:0}} name="user" size={20} color="black"/>
+                    </View>
+                    <View style={styles.inputSection}>
+                        <TextInput
+                            ref="password"
+                            style={styles.input}
+                            placeholder="Password"
+                            secureTextEntry
+                            onChangeText={password => this.setState({password})}
+                            value={this.state.password}
+                        />
+                        <Icon style={{marginHorizontal:10,marginBottom:0}} name="lock" size={20} color="black"/>
+                    </View>
+                    <View style={{flex:1,flexDirection:"row",justifyContent:'center',padding:10}}>
+                        <TouchableHighlight style={styles.touchableLogin} onPress={this.handleSubmit}>
+                            <Text style={styles.button}>Login</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight style={styles.touchableSignUp} onPress={() => this.props.navigation.navigate('SignUp')}>
+                            <Text style={styles.button}>Sign Up</Text>
+                        </TouchableHighlight>
+                    </View>
+                </KeyboardAvoidingView>
+            </ScrollView>
         )
     }
 }
