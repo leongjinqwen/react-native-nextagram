@@ -1,24 +1,9 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Text,Image, View,Button,AsyncStorage } from 'react-native';
-import { Card, ListItem } from 'react-native-elements'
+import { StyleSheet, ScrollView,Image, View } from 'react-native';
+import { ListItem } from 'react-native-elements'
 
 // only one export default in one js file
 export default class HomePage extends React.Component {
-  static navigationOptions = ({ navigation }) =>{
-    return {
-      title: 'Home',
-      headerRight:() => (
-        <Button
-          onPress={async () => {
-            await AsyncStorage.clear();
-            navigation.navigate('Login')
-          }}
-          title="Sign Out"
-          color="red"
-        />
-        )
-    }
-  }
   state = {
     users:[],
     isLoading:true
@@ -52,6 +37,7 @@ export default class HomePage extends React.Component {
               onPress={() => {
                 this.props.navigation.navigate('Profile', {
                   user: user,
+                  backscreen: 'Home',
                 });
               }} 
               bottomDivider
@@ -67,6 +53,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding:10,
+    paddingTop:20,
   },
   text: {
     fontSize:20,

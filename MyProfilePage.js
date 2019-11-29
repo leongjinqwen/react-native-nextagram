@@ -1,23 +1,23 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Text,Image,View,TouchableHighlight } from 'react-native';
+import { StyleSheet, ScrollView, Text,Image,View,Button,AsyncStorage } from 'react-native';
 import { Avatar } from 'react-native-elements'
 
 export default class ProfilePage extends React.Component {
-    static navigationOptions = {
-      title: 'Profile',
-    };
     state = {
         user:'',
         images:[],
         isLoading:true
     }
-    componentDidMount(){
-        const user = this.props.navigation.getParam('user', 'NO-user')
-        fetch(`https://insta.nextacademy.com/api/v1/images?userId=${user.id}`)
+    
+    componentDidMount= async () => {
+        const userToken = await AsyncStorage.getItem('userToken');
+        const user = JSON.parse(userToken)
+        console.log(user.user)
+        fetch(`https://insta.nextacademy.com/api/v1/images?userId=${user.user.id}`)
         .then(response => response.json())
         .then((responseJson)=> {
             this.setState({
-                user:user,
+                user:user.user,
                 images: responseJson,
                 isLoading:false
             })
@@ -36,7 +36,7 @@ export default class ProfilePage extends React.Component {
             <ScrollView style={styles.container}>
                 <View containerStyle={styles.card}>
                   <View style={styles.images}>
-                    <Avatar size="xlarge" rounded source={{uri:this.state.user.profileImage}}/>
+                    <Avatar size="xlarge" rounded source={{uri:this.state.user.profile_picture}}/>
                   </View>
                   <Text style={styles.title}>{this.state.user.username}</Text>
                   <View style={styles.images}>
@@ -44,11 +44,16 @@ export default class ProfilePage extends React.Component {
                         <Image key={index} source={{uri:image}} style={{marginTop:5,width: 200,height: 150}}/>
                       ))}
                   </View>
-                </View>
-                <View style={{flex:1,flexDirection:"row",justifyContent:'center',padding:10}}>
-                  <TouchableHighlight style={styles.touchableHome} onPress={()=>{this.props.navigation.navigate('App')}}>
-                      <Text style={styles.button}>Back to Home</Text>
-                  </TouchableHighlight>
+                  <View style={{marginBottom:20,paddingVertical:15,paddingHorizontal:40}}>
+                    <Button
+                      onPress={async () => {
+                        await AsyncStorage.clear();
+                        this.props.navigation.navigate('Login')
+                      }}
+                      title="Sign Out" color="red"
+                      style={{marginBottom:20,borderRadius:20}}
+                    />
+                  </View>
                 </View>
             </ScrollView>
         )
@@ -78,18 +83,5 @@ const styles = StyleSheet.create({
   card: {
     flex : 1,
     alignItems:'center',
-  },
-  touchableHome:{
-    backgroundColor:'orange',
-    height:40,
-    alignSelf:'center',
-    justifyContent:'center',
-    borderRadius:20,
-    marginBottom:20,
-    padding:20,
-  },
-  button: {
-    color:'white',
-    fontSize:20,
   }
 });

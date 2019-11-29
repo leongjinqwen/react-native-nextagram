@@ -4,14 +4,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Header} from 'react-navigation-stack'
 
 export default class SignUp extends React.Component {
-    // static navigationOptions = {
-    //   title: 'Sign Up',
-    // };
     state = {
         username:'',
         email:'',
         password:''
     }
+    _signInAsync = async (token) => {
+        await AsyncStorage.setItem('userToken', token );
+    };
 
     handleSubmit=()=> {
         console.log(this.state.email)
@@ -29,9 +29,9 @@ export default class SignUp extends React.Component {
         })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log('response object:',responseJson)
-            console.log('response object:',responseJson.user)
-
+            // sign in user after sign up
+            this._signInAsync(responseJson.auth_token,)
+            this.props.navigation.navigate('Account');
         })
         .catch((error) => {
             console.log('error:',error);
@@ -73,7 +73,7 @@ export default class SignUp extends React.Component {
                         <Icon style={{marginHorizontal:10,marginBottom:0}} name="lock" size={20} color="black"/>
                     </View>
                     <View style={{flex:1,flexDirection:"row",justifyContent:'center',padding:10}}>
-                        <TouchableHighlight style={styles.touchableLogin} onPress={this.handleSubmit}>
+                        <TouchableHighlight style={styles.touchableSignUp} onPress={this.handleSubmit}>
                             <Text style={styles.button}>Sign Up</Text>
                         </TouchableHighlight>
                     </View>
@@ -100,16 +100,8 @@ const styles = StyleSheet.create({
         flex : 1,
         alignItems:'center',
     },
-    touchableLogin:{
-        backgroundColor:'orange',
-        height:40,
-        alignSelf:'center',
-        justifyContent:'center',
-        borderRadius:20,
-        padding:20,
-    },
     touchableSignUp:{
-        backgroundColor:'red',
+        backgroundColor:'orange',
         height:40,
         alignSelf:'center',
         justifyContent:'center',

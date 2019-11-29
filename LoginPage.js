@@ -4,17 +4,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Header} from 'react-navigation-stack'
 
 export default class LoginPage extends React.Component {
-    // static navigationOptions = {
-    //   title: 'Sign In',
-    // };
     state = {
         username:'',
         password:''
     }
     _signInAsync = async (token) => {
-        await AsyncStorage.setItem('userToken', token );
-        // await AsyncStorage.setItem('user', user );
-      };
+        await AsyncStorage.setItem('userToken', JSON.stringify(token) );
+    };
 
     handleSubmit=()=> {
         fetch('https://insta.nextacademy.com/api/v1/login', {
@@ -30,10 +26,13 @@ export default class LoginPage extends React.Component {
         })
         .then((response) => response.json())
         .then((responseJson) => {
-            console.log('response object:',responseJson)
-            console.log('response user:',responseJson.user)
-            this._signInAsync(responseJson.auth_token,)
-            this.props.navigation.navigate('Profile',{user:responseJson.user});
+            let token = {
+                user:responseJson.user,
+                auth_token:responseJson.auth_token,
+            }
+            console.log(token)
+            this._signInAsync(token)
+            this.props.navigation.navigate('Account');
         })
         .catch((error) => {
             console.log('error:',error);
@@ -68,9 +67,6 @@ export default class LoginPage extends React.Component {
                         <TouchableHighlight style={styles.touchableLogin} onPress={this.handleSubmit}>
                             <Text style={styles.button}>Login</Text>
                         </TouchableHighlight>
-                        <TouchableHighlight style={styles.touchableSignUp} onPress={() => this.props.navigation.navigate('SignUp')}>
-                            <Text style={styles.button}>Sign Up</Text>
-                        </TouchableHighlight>
                     </View>
                 </KeyboardAvoidingView>
             </ScrollView>
@@ -97,14 +93,6 @@ const styles = StyleSheet.create({
     },
     touchableLogin:{
         backgroundColor:'orange',
-        height:40,
-        alignSelf:'center',
-        justifyContent:'center',
-        borderRadius:20,
-        padding:20,
-    },
-    touchableSignUp:{
-        backgroundColor:'red',
         height:40,
         alignSelf:'center',
         justifyContent:'center',
