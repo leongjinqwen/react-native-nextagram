@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, ScrollView, Text,Image,View,TouchableHighlight } from 'react-native';
 import { Avatar } from 'react-native-elements'
+import axios from 'react-native-axios'
 
 export default class ProfilePage extends React.Component {
     static navigationOptions = {
@@ -13,16 +14,20 @@ export default class ProfilePage extends React.Component {
     }
     componentDidMount(){
         const user = this.props.navigation.getParam('user', 'NO-user')
-        fetch(`https://insta.nextacademy.com/api/v1/images?userId=${user.id}`)
-        .then(response => response.json())
-        .then((responseJson)=> {
-            this.setState({
-                user:user,
-                images: responseJson,
-                isLoading:false
-            })
+        axios({
+          method: 'get',
+          url: `https://insta.nextacademy.com/api/v1/images?userId=${user.id}`,
         })
-        .catch(error=>console.log(error)) //to catch the errors if any
+        .then(response=> {
+          this.setState({
+            user:user,
+            images: response.data,
+            isLoading:false
+          })
+        })
+        .catch(error=> {
+          console.log(error);
+        });
     }
     render(){
         if (this.state.isLoading){

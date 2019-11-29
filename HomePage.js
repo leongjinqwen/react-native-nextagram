@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, ScrollView,Image, View } from 'react-native';
 import { ListItem } from 'react-native-elements'
+import axios from 'react-native-axios'
 
 // only one export default in one js file
 export default class HomePage extends React.Component {
@@ -9,15 +10,19 @@ export default class HomePage extends React.Component {
     isLoading:true
   }
   componentDidMount(){
-    fetch("https://insta.nextacademy.com/api/v1/users")
-    .then(response => response.json())
-    .then((responseJson)=> {
+    axios({
+      method: 'get',
+      url: 'https://insta.nextacademy.com/api/v1/users',
+    })
+    .then(response=> {
       this.setState({
-       users: responseJson,
-       isLoading:false
+        users: response.data,
+        isLoading:false
       })
     })
-    .catch(error=>console.log(error)) //to catch the errors if any
+    .catch(error=> {
+      console.log(error);
+    });
   }
   render(){
     if (this.state.isLoading){

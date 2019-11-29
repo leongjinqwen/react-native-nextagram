@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet,TextInput,View,Text,TouchableHighlight,KeyboardAvoidingView,ScrollView,AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Header} from 'react-navigation-stack'
+import axios from 'react-native-axios'
 
 export default class SignUp extends React.Component {
     state = {
@@ -14,30 +15,25 @@ export default class SignUp extends React.Component {
     };
 
     handleSubmit=()=> {
-        fetch('https://insta.nextacademy.com/api/v1/users/', {
+        axios({
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+            url: 'https://insta.nextacademy.com/api/v1/users/',
+            data : {
                 username:this.state.username,
                 email:this.state.email,
                 password:this.state.password,
-            }),
+            }
         })
-        .then((response) => response.json())
-        .then((responseJson) => {
-            // sign in user after sign up
+        .then(response=> {
             let token = {
-                user:responseJson.user,
-                auth_token:responseJson.auth_token,
+                user:response.data.user,
+                auth_token:response.data.auth_token,
             }
             this._signInAsync(token)
             this.props.navigation.navigate('Account');
         })
-        .catch((error) => {
-            console.log('error:',error);
+        .catch(error=> {
+            console.log(error);
         });
     }
     render(){

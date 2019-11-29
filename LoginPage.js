@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet,TextInput,View,Text,TouchableHighlight,KeyboardAvoidingView,AsyncStorage,ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Header} from 'react-navigation-stack'
+import axios from 'react-native-axios'
 
 export default class LoginPage extends React.Component {
     state = {
@@ -13,28 +14,24 @@ export default class LoginPage extends React.Component {
     };
 
     handleSubmit=()=> {
-        fetch('https://insta.nextacademy.com/api/v1/login', {
+        axios({
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
+            url: 'https://insta.nextacademy.com/api/v1/login',
+            data : {
                 username:this.state.username,
                 password:this.state.password,
-            }),
+            }
         })
-        .then((response) => response.json())
-        .then((responseJson) => {
+        .then(response=> {
             let token = {
-                user:responseJson.user,
-                auth_token:responseJson.auth_token,
+                user:response.data.user,
+                auth_token:response.data.auth_token,
             }
             this._signInAsync(token)
             this.props.navigation.navigate('Account');
         })
-        .catch((error) => {
-            console.log('error:',error);
+        .catch(error=> {
+            console.log(error);
         });
     }
     render(){
