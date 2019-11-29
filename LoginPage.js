@@ -30,7 +30,6 @@ export default class LoginPage extends React.Component {
                 user:responseJson.user,
                 auth_token:responseJson.auth_token,
             }
-            console.log(token)
             this._signInAsync(token)
             this.props.navigation.navigate('Account');
         })
